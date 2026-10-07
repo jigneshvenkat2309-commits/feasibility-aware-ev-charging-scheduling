@@ -1,0 +1,25 @@
+# Maven
+target/
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# Agent Scratch / Analysis Dumps
+scratch/
+results/analysis/
+papers.json
+bib_check.txt
+report_tables.md
+FINAL_Ev_Charging_Scheduling_Paper.tex
+FINAL_Ev_Charging_Scheduling_Paper.bib
+results/EV_Charging_Scheduling_IEEE_Paper.tex
+results/EV_Charging_Scheduling_IEEE_Paper.bib
+results/EV_Charging_Scheduling_Research_Paper.md
+extra_refs.bib
+precise_refs.bib
+
+# Python
+__pycache__/
+*.pyc
