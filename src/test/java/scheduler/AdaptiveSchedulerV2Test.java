@@ -16,7 +16,11 @@ class AdaptiveSchedulerV2Test {
 
     @BeforeEach
     void setUp() {
-        station = new Station(3, 50.0);
+        station = new Station("ST-1", List.of(
+                new Charger(1, 50.0),
+                new Charger(2, 50.0),
+                new Charger(3, 50.0)
+        ));
         scheduler = new AdaptiveSchedulerV2();
     }
 
@@ -28,7 +32,7 @@ class AdaptiveSchedulerV2Test {
         // EV 2: Feasible (Needs 25kWh @ 50kW = 30 mins, has 60 mins left)
         EV evFeasible = new EV(2, 0, 60, 50.0, 0.5, 1.0, 50.0);
 
-        Station smallStation = new Station(1, 50.0);
+        Station smallStation = new Station("ST-1", List.of(new Charger(1, 50.0)));
         smallStation.addEV(evInfeasible);
         smallStation.addEV(evFeasible);
 
@@ -45,7 +49,7 @@ class AdaptiveSchedulerV2Test {
         // EV 2: Infeasible (deficit = 120 - 60 = 60 mins)
         EV ev2 = new EV(2, 0, 60, 100.0, 0.0, 1.0, 50.0);
 
-        Station smallStation = new Station(1, 50.0);
+        Station smallStation = new Station("ST-1", List.of(new Charger(1, 50.0)));
         smallStation.addEV(ev1);
         smallStation.addEV(ev2);
 
@@ -61,7 +65,7 @@ class AdaptiveSchedulerV2Test {
         EV ev1 = new EV(1, 0, 60, 50.0, 0.5, 1.0, 50.0);
         EV ev2 = new EV(2, 0, 60, 50.0, 0.5, 1.0, 50.0);
         
-        Station smallStation = new Station(1, 50.0);
+        Station smallStation = new Station("ST-1", List.of(new Charger(1, 50.0)));
         smallStation.addEV(ev1);
         smallStation.addEV(ev2);
 
@@ -78,7 +82,7 @@ class AdaptiveSchedulerV2Test {
         // Low urgency, feasible
         EV evRelaxed = new EV(2, 0, 120, 50.0, 0.5, 1.0, 50.0);
         
-        Station smallStation = new Station(1, 50.0);
+        Station smallStation = new Station("ST-1", List.of(new Charger(1, 50.0)));
         smallStation.addEV(evUrgent);
         smallStation.addEV(evRelaxed);
 

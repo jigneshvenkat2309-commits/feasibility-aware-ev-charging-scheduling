@@ -18,7 +18,7 @@
 \title{Feasibility-Aware Adaptive Scheduling for Electric Vehicle Charging Stations: A Discrete-Time Simulation Study}
 
 \author{\IEEEauthorblockN{Esanagiri Jignesh}
-\IEEEauthorblockA{\textit{School of Computer Science Engineering} \\
+\IEEEauthorblockA{\textit{School of Computer Science and Engineering} \\
 \textit{Vellore Institute of Technology}\\
 Vellore, India \\
 }
@@ -27,7 +27,7 @@ Vellore, India \\
 \maketitle
 
 \begin{abstract}
-The rapid proliferation of Electric Vehicles (EVs) creates intense competition for limited charging infrastructure under dynamic arrival patterns and strict departure deadlines. In charging stations operating under high demand and hardware uncertainty, standard scheduling paradigms face acute operational challenges: First-Come, First-Served (FCFS) ignores urgency; Earliest Deadline First (EDF) prioritizes tight departures regardless of whether vehicles can physically achieve their required charge; and naive greedy heuristics prioritize energy deficits at the expense of feasibility. In this discrete-time simulation study, we evaluate EV charging schedulers across a controlled 48-cell experimental matrix spanning fleet sizes (50 to 500 EVs), arrival demand regimes (LOW, NORMAL, HIGH), uncertainty levels, and scheduled/simulated charger outages over a 720-minute horizon (5 independent trials per cell; 1,200 total simulation runs). We identify a critical priority-inversion vulnerability in a multi-factor composite heuristic (Adaptive V1), wherein vehicles that are infeasible to complete before departure saturate urgency metrics and starve achievable sessions. To resolve this, we propose Adaptive V2, a deterministic rule-based scheduler enforcing a ``feasibility first, priority second'' principle. Across the 48-cell matrix, Adaptive V2 achieved an aggregate completion rate of 61.93\% and a deadline violation rate of 24.95\%, compared to 52.02\% and 34.61\% for EDF, 38.23\% and 47.60\% for FCFS, 37.70\% and 48.18\% for Adaptive V1, and 35.63\% and 50.25\% for Greedy. In the extreme stress scenario (500 EVs, burst arrivals, high uncertainty, and a 25\% charger outage for 120 minutes), Adaptive V2 maintained a 43.12\% completion rate versus 28.56\% for EDF and 19.56\% for V1. These findings provide evidence that integrating an arithmetic feasibility check into a lightweight deterministic rule-based scheduler provides a practical mechanism for reducing priority inversion under congested charging conditions.
+The rapid proliferation of Electric Vehicles (EVs) creates intense competition for limited charging infrastructure under dynamic arrival patterns and strict departure deadlines. In charging stations operating under high demand and hardware uncertainty, standard scheduling paradigms face acute operational challenges: First-Come, First-Served (FCFS) ignores urgency; Earliest Deadline First (EDF) prioritizes tight departures regardless of whether vehicles can physically achieve their required charge; and naive greedy heuristics prioritize energy deficits at the expense of feasibility. In this discrete-time simulation study, we evaluate EV charging schedulers across a controlled 48-cell experimental matrix spanning fleet sizes (50 to 500 EVs), arrival demand regimes (LOW, NORMAL, HIGH), uncertainty levels, and scheduled/simulated charger outages over a 720-minute horizon (5 independent trials per cell; 1,200 total simulation runs). We identify a critical priority-inversion vulnerability in a multi-factor composite heuristic (Adaptive V1), wherein vehicles that are infeasible to complete before departure saturate urgency metrics and starve achievable sessions. To resolve this, we propose Adaptive V2, a deterministic rule-based scheduler enforcing a ``feasibility first, priority second'' principle. Across the 48-cell matrix, Adaptive V2 achieved an aggregate completion rate of 61.93\% and a deadline violation rate of 24.95\%, compared to 52.02\% and 34.61\% for EDF, 38.23\% and 47.60\% for FCFS, 37.70\% and 48.18\% for Adaptive V1, and 35.63\% and 50.25\% for Greedy. In the extreme stress scenario (500 EVs, burst arrivals, high uncertainty, and a 25-charger (25\%) outage for 120 minutes), Adaptive V2 maintained a 43.12\% completion rate versus 28.56\% for EDF and 19.56\% for V1. These findings provide evidence that integrating an arithmetic feasibility check into a lightweight deterministic rule-based scheduler provides a practical mechanism for reducing priority inversion under congested charging conditions.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -60,12 +60,12 @@ The remainder of this paper is organized as follows: Section \ref{sec:related} r
 EV charging scheduling has been extensively studied across power systems, operations research, and computer engineering. Prior research broadly bifurcates into centralized optimization frameworks and decentralized/heuristic dispatching models \cite{mukherjee2014a, alogaili2019review}.
 
 \subsection{Centralized and Optimal Scheduling}
-Centralized charging coordination typically formulates the dispatch problem as a constrained optimization problem. Clement-Nyns et al. \cite{clement2010impact} formulated a quadratic programming framework for coordinated EV charging, while subsequent works \cite{mukherjee2014a, alogaili2019review} explored broader EV charging scheduling and optimization applications. Gan et al. \cite{gan2013optimal} developed decentralized protocols for valley-filling using dual decomposition. Cao et al. \cite{cao2012optimized} incorporated Time-of-Use (TOU) electricity pricing with battery SOC constraints to minimize consumer charging costs \cite{zhang2014charging, ortegavazquez2012electric}. Similarly, de Hoog et al. \cite{dehoog2015optimal} incorporated three-phase distribution network constraints into localized EV charging schedules \cite{li2021coordinating}.These optimization formulations can provide strong solutions under their modeled assumptions, but they generally involve forecasting, optimization procedures, and system constraints beyond the scope of the lightweight rule-based simulation evaluated in this study. 
+Centralized charging coordination typically formulates the dispatch problem as a constrained optimization problem. Clement-Nyns et al. \cite{clement2010impact} formulated a quadratic programming framework for coordinated EV charging, while subsequent works \cite{mukherjee2014a, alogaili2019review} explored broader EV charging scheduling and optimization applications. Gan et al. \cite{gan2013optimal} developed decentralized protocols for valley-filling using dual decomposition. Cao et al. \cite{cao2012optimized} incorporated Time-of-Use (TOU) electricity pricing with battery SOC constraints to minimize consumer charging costs \cite{zhang2014charging, ortegavazquez2012electric}. Similarly, de Hoog et al. \cite{dehoog2015optimal} incorporated three-phase distribution network constraints into localized EV charging schedules \cite{li2021coordinating}. These optimization formulations can provide strong solutions under their modeled assumptions, but they generally involve forecasting, optimization procedures, and system constraints beyond the scope of the lightweight rule-based simulation evaluated in this study. 
 
 \subsection{Real-Time and Deadline-Aware Dispatching}
 Real-time dispatching algorithms offer low-complexity alternatives for dynamic environments \cite{deilami2011realtime, mohamed2013realtime}. The classical Earliest Deadline First (EDF) algorithm, formalized by Liu and Layland \cite{liu1973scheduling}, prioritizes tasks with the nearest expiration deadline. In classical uniprocessor hard-real-time scheduling, EDF is optimal for preemptive independent tasks under the standard schedulability assumptions when processor utilization does not exceed unity. However, under transient overloads or unpredictable arrival bursts, EDF experiences a degradation phenomenon sometimes described as a domino effect or performance collapse \cite{buttazzo2011hard}: tasks with imminent deadlines are executed even when they are guaranteed to miss their deadlines, subsequently causing subsequent viable tasks to miss theirs as well.
 
-In EV charging, Vagropoulos et al. \cite{vagropoulos2019comparison} analyzed rule-based strategies, demonstrating that while EDF provides strong performance under moderate utilization, its behavior degrades when stations lack sufficient capacity to fulfill all scheduled requests \cite{chen2012deadline, jin2020optimal, hao2022laxity}.Greedy strategies that prioritize the lowest SOC or largest energy gap also struggle because they ignore temporal deadlines, frequently stranding vehicles with moderate charge requirements that could have completed successfully \cite{alonso2014optimal, yao2014multi}. Furthermore, recent advancements emphasize real-time coordination architectures \cite{tian2016realtime, tan2015realtime, guo2014rapidcharging}, often employing heuristic approaches to balance computational efficiency with the practical constraints of transactive energy markets and IoT-driven demand response systems \cite{savari2019internet, liu2018transactive, yao2016a, kang2015centralized}.
+In EV charging, Vagropoulos et al. \cite{vagropoulos2019comparison} analyzed rule-based strategies, demonstrating that while EDF provides strong performance under moderate utilization, its behavior degrades when stations lack sufficient capacity to fulfill all scheduled requests \cite{chen2012deadline, jin2020optimal, hao2022laxity}. Greedy strategies that prioritize the lowest SOC or largest energy gap also struggle because they ignore temporal deadlines, frequently stranding vehicles with moderate charge requirements that could have completed successfully \cite{alonso2014optimal, yao2014multi}. Furthermore, recent advancements emphasize real-time coordination architectures \cite{tian2016realtime, tan2015realtime, guo2014rapidcharging}, often employing heuristic approaches to balance computational efficiency with the practical constraints of transactive energy markets and IoT-driven demand response systems \cite{savari2019internet, liu2018transactive, yao2016a, kang2015centralized}.
 
 \subsection{Position of this Work}
 This study focuses on deterministic rule-based dispatching heuristics. We evaluate whether integrating explicit mathematical feasibility checking into a lightweight rule-based scheduler can improve charging completion rates relative to standard sorting-based baselines (FCFS, EDF, and Greedy) and an unconstrained composite heuristic (Adaptive V1), while retaining deterministic execution and full algorithmic explainability.
@@ -99,6 +99,7 @@ C_v \cdot
 \quad [\text{kWh}]
 \label{eq:e_orig}
 \end{equation}
+where $SOC_v^{\mathrm{target}} = \min(0.90, SOC_v^{\mathrm{init}} + \Delta SOC)$ is the target State of Charge capped at 0.90 for a sampled increment $\Delta SOC$. When the cap is reached, the realized increase $SOC_v^{\mathrm{target}} - SOC_v^{\mathrm{init}}$ may be smaller than the sampled increment.
 
 \item Dynamic states: remaining required energy
 $E_v^{\mathrm{rem}}(t) \in [0,E_v^{\mathrm{orig}}]$, current State of Charge
@@ -311,6 +312,7 @@ Charger Power ($P_c^{\max}$) & 11.0~kW (homogeneous across chargers) \\
 Battery Capacity ($C_v$) & Uniformly distributed $\sim U(40.0, 80.0)$~kWh \\
 Acceptance Power ($P_v^{\max}$) & Uniformly distributed $\sim U(3.0, 11.0)$~kW \\
 Initial SOC ($SOC_v^{\mathrm{init}}$) & Uniformly distributed $\sim 0.20 + U(0, 0.35)$ \\
+Target SOC ($SOC_v^{\mathrm{target}}$) & $\min(0.90, SOC_v^{\mathrm{init}} + \Delta SOC)$ (capped at 0.90) \\
 Simulation Horizon ($T$) & 720~min (12 operational hours) \\
 Time Resolution ($\Delta t$) & 1.0~min discrete simulation step \\
 \midrule
@@ -320,12 +322,12 @@ Time Resolution ($\Delta t$) & 1.0~min discrete simulation step \\
 -- HIGH & 360-min window, 25\% burst in first 90~min \\
 \midrule
 \multicolumn{2}{l}{\textbf{Uncertainty Regimes}} \\
--- LOW & $\Delta SOC \in [0.20, 0.30]$, slack = 60~min \\
--- HIGH & $\Delta SOC \in [0.10, 0.60]$, slack $\in [15, 90]$~min \\
+-- LOW & Sampled $\Delta SOC \in [0.20, 0.30]$, slack = 60~min \\
+-- HIGH & Sampled $\Delta SOC \in [0.10, 0.60]$, slack $\in [15, 90]$~min \\
 \midrule
 \multicolumn{2}{l}{\textbf{Charger Failure}} \\
 -- OFF & No hardware failures (100\% availability) \\
--- ON & 25\% chargers fail at $t=180$, repair at $t=300$ \\
+-- ON & $\max(1, \lfloor M / 4 \rfloor)$ chargers fail at $t=180$, repair at $t=300$ \\
 \midrule
 Replication Matrix & 48 cells $\times$ 5 trials $\times$ 5 schedulers = 1,200 runs \\
 \bottomrule
@@ -336,8 +338,8 @@ Replication Matrix & 48 cells $\times$ 5 trials $\times$ 5 schedulers = 1,200 ru
 \subsection{Demand and Uncertainty Scenarios}
 \begin{itemize}
     \item \textbf{Demand Levels:} In LOW demand, vehicle arrivals are distributed over the full 720-minute horizon. In NORMAL demand, arrivals compress into a 540-minute window. In HIGH demand, arrivals compress into a 360-minute window, and an arrival burst is activated such that the first 25\% of the fleet arrives within the first 25\% of the arrival window (i.e., within the first 90 minutes).
-    \item \textbf{Uncertainty Levels:} Under LOW uncertainty, the target SOC delta is narrow ($\Delta SOC \in [0.20, 0.30]$) and departure slack is constant at 60 minutes above theoretical charging service time. Under HIGH uncertainty, target delta expands to $\Delta SOC \in [0.10, 0.60]$ and slack varies stochastically between 15 and 90 minutes.
-    \item \textbf{Charger Failure:} When failure is enabled, the first $\lceil M / 4 \rceil$ chargers (25\% of station capacity) experience simultaneous failure at $t = 180$ minutes and are restored at $t = 300$ minutes (a 120-minute outage). Connected vehicles are disengaged and returned to the waiting queue.
+    \item \textbf{Uncertainty Levels:} The target state of charge is generated as $SOC_v^{\mathrm{target}} = \min(0.90, SOC_v^{\mathrm{init}} + \Delta SOC)$, where $\Delta SOC$ is the sampled increment. When the cap is reached, the realized increase may be smaller than the sampled increment. Under LOW uncertainty, the sampled increment is narrow ($\Delta SOC \in [0.20, 0.30]$) and departure slack is constant at 60 minutes above theoretical charging service time. Under HIGH uncertainty, the sampled increment expands to $\Delta SOC \in [0.10, 0.60]$ and slack varies stochastically between 15 and 90 minutes.
+    \item \textbf{Charger Failure:} When failure is enabled, the first $\max(1, \lfloor M / 4 \rfloor)$ chargers experience simultaneous failure at $t = 180$ minutes and are restored at $t = 300$ minutes (a 120-minute outage). Because integer division truncates for non-multiples of four, the resulting failure counts are 2 chargers for $M = 10$ (20\%), 5 for $M = 20$ (25\%), 12 for $M = 50$ (24\%), and 25 for $M = 100$ (25\%). Connected vehicles are disengaged and returned to the waiting queue.
 \end{itemize}
 
 \subsection{Seed Derivation and Fairness Protocol}
@@ -544,7 +546,7 @@ Table \ref{tab:uncertainty} compares performance under tight versus broad SOC an
 Under HIGH uncertainty, expanded target SOCs increase the total required energy across the fleet, while tight departure slacks (down to 15 minutes) reduce the feasible scheduling window. All algorithms experience lower completion rates, but Adaptive V2 maintains a completion rate of 53.87\%, compared to 45.31\% for EDF and under 30\% for FCFS, Greedy, and V1.
 
 \subsection{Impact of Scheduled Charger Failures}
-Table \ref{tab:failure} summarizes station performance with charger hardware failures disabled versus enabled, while Fig. \ref{fig:failure} illustrates the completion rate impact across schedulers. When 25\% of station chargers fail simultaneously between minutes 180 and 300 (a 120-minute outage), overall completion declines by 3.98 to 6.73 percentage points across the schedulers. Adaptive V2 degrades gracefully from 63.92\% to 59.94\% (-3.98 percentage points), retaining a higher completion rate under failure than any baseline achieves without failure.
+Table \ref{tab:failure} summarizes station performance with charger hardware failures disabled versus enabled, while Fig. \ref{fig:failure} illustrates the completion rate impact across schedulers. When scheduled charger failures occur between minutes 180 and 300 ($\max(1, \lfloor M / 4 \rfloor)$ chargers, a 120-minute outage of 20\%--25\% station capacity), overall completion declines by 3.98 to 6.73 percentage points across the schedulers. Adaptive V2 degrades gracefully from 63.92\% to 59.94\% (-3.98 percentage points), retaining a higher completion rate under failure than any baseline achieves without failure.
 
 \begin{table}[t]
 \caption{Performance With and Without Charger Failures}
@@ -576,7 +578,7 @@ Table \ref{tab:failure} summarizes station performance with charger hardware fai
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.98\columnwidth]{figures/completion_failure_comparison.png}
-\caption{Completion rates with charger failure OFF versus ON (25\% capacity outage from minute 180 to 300).}
+\caption{Completion rates with charger failure OFF versus ON (scheduled outage of $\max(1, \lfloor M / 4 \rfloor)$ chargers from minute 180 to 300).}
 \label{fig:failure}
 \end{figure}
 
